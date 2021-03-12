@@ -1,0 +1,2 @@
+enemy.spawnEnemy()
+# enemy.spawnFood()
