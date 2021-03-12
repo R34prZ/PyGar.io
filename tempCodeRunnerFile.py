@@ -1,2 +1,0 @@
-enemy.spawnEnemy()
-# enemy.spawnFood()
