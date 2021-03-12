@@ -94,8 +94,6 @@ class Enemy():
                         self.enemies_list.remove([enemy_pos, enemy_radius])
 
         for food_pos, food_radius in self.food_list:
-            pygame.draw.circle(self.surface, (25, 20, 25), (food_pos), food_radius)
-            
             if player.radius > food_radius:
                 if self.ccCollision(food_pos[0], food_pos[1], player.x, player.y, food_radius, player.radius):
                     self.player.radius += food_radius // 2
