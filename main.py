@@ -20,7 +20,7 @@ player = player.Player(width//2 - 15, height//2 - 15, 20)
 player.drawPlayer(screen, (50, 100, 250))
 player.playerMovement(5, movements)
 
-enemy = enemy.Enemy(1, screen)
+enemy = enemy.Enemy(5, screen)
 enemy.eatEnemy(player)
 
 while True:
@@ -35,7 +35,7 @@ while True:
     if len(enemy.food_list) <= 0:
         enemy.food_list = enemy.spawnFood()
     
-    enemy.enemyMovement(2, [player.x, player.y])
+    enemy.enemyMovement(2, player)
 
     for event in pygame.event.get():
         if event.type == QUIT:

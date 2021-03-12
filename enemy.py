@@ -42,38 +42,38 @@ class Enemy():
 
     def draw(self):
 
-        for enemy_pos, radius in self.enemies_list:
-            pygame.draw.circle(self.surface, (80, 150, 50), enemy_pos, radius)
-
         for food_pos, radius in self.food_list:
             pygame.draw.circle(self.surface, (25, 20, 25), (food_pos), radius)
 
-    def enemyMovement(self, enemy_vel, player_pos : list):
-        self.player_pos = player_pos
+        for enemy_pos, radius in self.enemies_list:
+            pygame.draw.circle(self.surface, (80, 150, 50), enemy_pos, radius)
+
+    def enemyMovement(self, enemy_vel, player):
+        self.player_pos = (player.x, player.y)
         self.enemy_vel = enemy_vel
 
         for enemy_pos, enemy_radius in self.enemies_list:
-            if enemy_pos[0] < self.player_pos[0]:
-                enemy_pos[0] += self.enemy_vel
-            if enemy_pos[0] > self.player_pos[0]:
-                enemy_pos[0] -= self.enemy_vel
-            if enemy_pos[1] < self.player_pos[1]:
-                enemy_pos[1] += self.enemy_vel
-            if enemy_pos[1] > self.player_pos[1]:
-                enemy_pos[1] -= self.enemy_vel
+
+            if enemy_radius > player.radius:
+                if enemy_pos[0] < self.player_pos[0]:
+                    enemy_pos[0] += self.enemy_vel
+                if enemy_pos[0] > self.player_pos[0]:
+                    enemy_pos[0] -= self.enemy_vel
+                if enemy_pos[1] < self.player_pos[1]:
+                    enemy_pos[1] += self.enemy_vel
+                if enemy_pos[1] > self.player_pos[1]:
+                    enemy_pos[1] -= self.enemy_vel
             
-            # also not working
-            # for i in range(len(self.enemies_list)):
-            #         if enemy.colliderect(self.enemies_list[i][0]):
-            #             self.enemy_vel = 0
-            #         else: self.enemy_vel = enemy_vel
-            
-            # not working
-            # for food, food_radius in self.food_list:
-            #     if enemy.colliderect(food):
-            #         enemy_radius += food_radius // 2
-            #         self.food_list.remove([food, food_radius])
-    
+            elif enemy_radius <= player.radius:
+                if enemy_pos[0] < self.player_pos[0]:
+                    enemy_pos[0] -= self.enemy_vel
+                if enemy_pos[0] > self.player_pos[0]:
+                    enemy_pos[0] += self.enemy_vel
+                if enemy_pos[1] < self.player_pos[1]:
+                    enemy_pos[1] -= self.enemy_vel
+                if enemy_pos[1] > self.player_pos[1]:
+                    enemy_pos[1] += self.enemy_vel
+
     def ccCollision(self, c1x, c1y, c2x, c2y, c1r, c2r):
         self.distX = c1x - c2x # x distance between the two circles
         self.distY = c1y - c2y # y distance between the two circles
