@@ -1,6 +1,4 @@
 import pygame
-from pygame import surface
-
 class Player:
     def __init__(self, x, y, radius):
         self.x = x
@@ -36,8 +34,8 @@ class Player:
         self.y += self.player_aceleration[1]
 
     def camera(self):
-        self.cam_scroll[0] += (self.x - self.cam_scroll[0] - round(self.surface.get_width() * 0.5 - self.radius * 0.5))// 20
-        self.cam_scroll[1] += (self.y - self.cam_scroll[1] - round(self.surface.get_height() * 0.5 - self.radius * 0.5))// 20
+        self.cam_scroll[0] += (self.x - self.cam_scroll[0] - round(self.surface.get_width() * 0.5 + self.radius * 0.5))// 20
+        self.cam_scroll[1] += (self.y - self.cam_scroll[1] - round(self.surface.get_height() * 0.5 + self.radius * 0.5))// 20
 
     def update(self):
         self.drawPlayer(self.surface, self.color)

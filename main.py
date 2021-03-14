@@ -1,7 +1,7 @@
 import pygame, sys
 from pygame.locals import *
 
-import player, enemy
+import player, enemy, world
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -20,7 +20,9 @@ player = player.Player(width//2 - 15, height//2 - 15, 20)
 player.drawPlayer(screen, (50, 100, 250))
 player.playerMovement(5, movements)
 
-enemy = enemy.Enemy(5, screen)
+world = world.World(screen, 5, player)
+
+enemy = enemy.Enemy(5, screen, world)
 enemy.eatEnemy(player)
 
 while True:
@@ -29,6 +31,7 @@ while True:
     
     player.update()
     enemy.update()
+    world.update()
 
     if len(enemy.enemies_list) <= 0:
         enemy.enemies_list = enemy.spawnEnemy()
