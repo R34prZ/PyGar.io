@@ -1,8 +1,7 @@
+from player import Player
 import pygame
 from random import randint
 from math import sqrt
-
-from pygame import draw
 
 class Enemy():
     def __init__(self, quantity, surface):
@@ -43,10 +42,10 @@ class Enemy():
     def draw(self):
 
         for food_pos, radius in self.food_list:
-            pygame.draw.circle(self.surface, (25, 20, 25), (food_pos), radius)
+            pygame.draw.circle(self.surface, (25, 20, 25), (food_pos[0] - self.player.cam_scroll[0], food_pos[1] - self.player.cam_scroll[1]), radius)
 
         for enemy_pos, radius in self.enemies_list:
-            pygame.draw.circle(self.surface, (80, 150, 50), enemy_pos, radius)
+            pygame.draw.circle(self.surface, (80, 150, 50), (enemy_pos[0] - self.player.cam_scroll[0], enemy_pos[1] - self.player.cam_scroll[1]), radius)
 
     def enemyMovement(self, enemy_vel, player):
         self.player_pos = (player.x, player.y)

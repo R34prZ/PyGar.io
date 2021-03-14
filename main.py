@@ -1,4 +1,4 @@
-import pygame, sys, random
+import pygame, sys
 from pygame.locals import *
 
 import player, enemy
@@ -7,7 +7,7 @@ pygame.init()
 clock = pygame.time.Clock()
 
 WIN_SIZE = width, height = 1080, 720
-screen = pygame.display.set_mode(WIN_SIZE)
+screen = pygame.display.set_mode(WIN_SIZE, 0, 32)
 
 movements = {
     'moving_up' : False,
