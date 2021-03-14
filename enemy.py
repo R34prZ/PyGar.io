@@ -1,18 +1,15 @@
-from player import Player
 import pygame
 from random import randint
 from math import sqrt
 
 class Enemy():
-    def __init__(self, quantity, surface):
+    def __init__(self, quantity, surface, world):
         self.quantity = quantity
         self.surface = surface
+        self.world = world
 
         self.surf_width = self.surface.get_width()
         self.surf_height = self.surface.get_height()
-
-        self.spawnEnemy()
-        self.spawnFood()
 
         self.enemies_list = self.spawnEnemy()
         self.food_list = self.spawnFood()
@@ -53,7 +50,7 @@ class Enemy():
 
         for enemy_pos, enemy_radius in self.enemies_list:
 
-            if enemy_radius > player.radius:
+            if enemy_radius > player.radius and self.distance < 50:
                 if enemy_pos[0] < self.player_pos[0]:
                     enemy_pos[0] += self.enemy_vel
                 if enemy_pos[0] > self.player_pos[0]:
@@ -63,7 +60,7 @@ class Enemy():
                 if enemy_pos[1] > self.player_pos[1]:
                     enemy_pos[1] -= self.enemy_vel
             
-            elif enemy_radius <= player.radius:
+            elif enemy_radius <= player.radius and self.distance < 50:
                 if enemy_pos[0] < self.player_pos[0]:
                     enemy_pos[0] -= self.enemy_vel
                 if enemy_pos[0] > self.player_pos[0]:
@@ -72,6 +69,15 @@ class Enemy():
                     enemy_pos[1] -= self.enemy_vel
                 if enemy_pos[1] > self.player_pos[1]:
                     enemy_pos[1] += self.enemy_vel
+                    
+            if enemy_pos[0] >= self.world.world_width:
+                enemy_pos[0] -= self.enemy_vel
+            if enemy_pos[0] <= self.world.world_x:
+                enemy_pos[0] += self.enemy_vel
+            if enemy_pos[1] >= self.world.world_y:
+                enemy_pos[1] -= self.enemy_vel
+            if enemy_pos[1] <= self.world.world_y:
+                enemy_pos[1] += self.enemy_vel
 
     def ccCollision(self, c1x, c1y, c2x, c2y, c1r, c2r):
         self.distX = c1x - c2x # x distance between the two circles
@@ -87,13 +93,13 @@ class Enemy():
         self.player = player
 
         for enemy_pos, enemy_radius in self.enemies_list:
-            if player.radius > enemy_radius:
+            if self.player.radius > enemy_radius:
                     if self.ccCollision(enemy_pos[0], enemy_pos[1], player.x, player.y, enemy_radius - (enemy_radius * 0.75), player.radius):
-                        player.radius += enemy_radius // 2
+                        self.player.radius += enemy_radius // 2
                         self.enemies_list.remove([enemy_pos, enemy_radius])
 
         for food_pos, food_radius in self.food_list:
-            if player.radius > food_radius:
+            if self.player.radius > food_radius:
                 if self.ccCollision(food_pos[0], food_pos[1], player.x, player.y, food_radius, player.radius):
                     self.player.radius += food_radius // 2
                     self.food_list.remove([food_pos, food_radius])
