@@ -1,114 +1,42 @@
 import pygame
-from random import randint
-from math import sqrt
 
 class Enemy():
-    def __init__(self, quantity, surface, world):
-        self.quantity = quantity
+    def __init__(self, x, y, radius, surface, player):
+
         self.surface = surface
-        self.world = world
-        self.enemy_vel = 2
 
-        self.surf_width = self.surface.get_width()
-        self.surf_height = self.surface.get_height()
+        self.x = x
+        self.y = y
+        self.radius = radius
 
-        self.enemies_list = self.__spawnEnemy()
-        self.food_list = self.__spawnFood()
-    
-    def __spawnEnemy(self):
-        self.enemy_pos = []
-        
-        for i in range(self.quantity):
-            self.enemy_x = randint(0, self.surf_width)
-            self.enemy_y = randint(0, self.surf_height)
-            self.enemy_radius = randint(0, 100)
-            if pygame.Rect(self.enemy_x, self.enemy_y, self.enemy_radius-10, self.enemy_radius-10) not in self.enemy_pos:
-                self.enemy_pos.append([[self.enemy_x, self.enemy_y], self.enemy_radius])
-
-        return self.enemy_pos
-    
-    def __spawnFood(self):
-        self.food_pos = []
-        for i in range(100):
-            self.food_x = randint(0, self.surf_width)
-            self.food_y = randint(0, self.surf_height)
-            self.food_radius = randint(1, 5)
-            self.food_pos.append([(self.food_x, self.food_y), self.food_radius])
-
-        return self.food_pos
-
-    def __draw(self):
-
-        for food_pos, radius in self.food_list:
-            pygame.draw.circle(self.surface, (25, 20, 25), (food_pos[0] - self.player.cam_scroll[0], food_pos[1] - self.player.cam_scroll[1]), radius)
-
-        for enemy_pos, radius in self.enemies_list:
-            pygame.draw.circle(self.surface, (80, 150, 50), (enemy_pos[0] - self.player.cam_scroll[0], enemy_pos[1] - self.player.cam_scroll[1]), radius)
-
-    def _enemyMovement(self, player):
-        self.player_pos = (player.x, player.y)
-
-        for enemy_pos, enemy_radius in self.enemies_list:
-
-            if enemy_radius > player.radius:
-                if enemy_pos[0] < self.player_pos[0]:
-                    enemy_pos[0] += self.enemy_vel
-                if enemy_pos[0] > self.player_pos[0]:
-                    enemy_pos[0] -= self.enemy_vel
-                if enemy_pos[1] < self.player_pos[1]:
-                    enemy_pos[1] += self.enemy_vel
-                if enemy_pos[1] > self.player_pos[1]:
-                    enemy_pos[1] -= self.enemy_vel
-            
-            elif enemy_radius <= player.radius:
-                if enemy_pos[0] < self.player_pos[0]:
-                    enemy_pos[0] -= self.enemy_vel
-                if enemy_pos[0] > self.player_pos[0]:
-                    enemy_pos[0] += self.enemy_vel
-                if enemy_pos[1] < self.player_pos[1]:
-                    enemy_pos[1] -= self.enemy_vel
-                if enemy_pos[1] > self.player_pos[1]:
-                    enemy_pos[1] += self.enemy_vel
-            
-            # if enemy_pos[0] >= self.world.world_width:
-            #     enemy_pos[0] -= self.enemy_vel
-            # if enemy_pos[0] <= self.world.world_x:
-            #     enemy_pos[0] += self.enemy_vel
-            # if enemy_pos[1] >= self.world.world_y:
-            #     enemy_pos[1] -= self.enemy_vel
-            # if enemy_pos[1] <= self.world.world_y:
-            #     enemy_pos[1] += self.enemy_vel
-
-    def __ccCollision(self, c1x, c1y, c2x, c2y, c1r, c2r):
-        self.distX = c1x - c2x # x distance between the two circles
-        self.distY = c1y - c2y # y distance between the two circles
-        self.distance = sqrt((self.distX**2) + (self.distY**2)) # pythagorean theorem to find the distance between the two circles
-
-        # if the distance is less then the sum of the two circles radium, they are colliding
-        if self.distance <= c1r + c2r: return True
-        else: return False
-
-    def eatEnemy(self, player):
         self.player = player
+        self.enemy_vel = 2
+    
+    def __draw(self):
+        pygame.draw.circle(self.surface, (80, 150, 50), (self.x - self.player.cam_scroll[0], self.y - self.player.cam_scroll[1]), self.radius)
 
-        for enemy_pos, enemy_radius in self.enemies_list:
-            if self.player.radius > enemy_radius:
-                    if self.__ccCollision(enemy_pos[0], enemy_pos[1], player.x, player.y, enemy_radius - (enemy_radius * 0.75), player.radius):
-                        self.player.radius += enemy_radius // 2
-                        self.enemies_list.remove([enemy_pos, enemy_radius])
+    def _enemyMovement(self):
 
-        for food_pos, food_radius in self.food_list:
-            if self.player.radius > food_radius:
-                if self.__ccCollision(food_pos[0], food_pos[1], player.x, player.y, food_radius, player.radius):
-                    self.player.radius += food_radius // 2
-                    self.food_list.remove([food_pos, food_radius])
-
+        if self.radius > self.player.radius:
+            if self.x < self.player.x:
+                self.x += self.enemy_vel
+            if self.x > self.player.x:
+                self.x -= self.enemy_vel
+            if self.y < self.player.y:
+                self.y += self.enemy_vel
+            if self.y > self.player.y:
+                self.y -= self.enemy_vel
+        
+        elif self.radius <= self.player.radius:
+            if self.x < self.player.x:
+                self.x -= self.enemy_vel
+            if self.x > self.player.x:
+                self.x += self.enemy_vel
+            if self.y < self.player.y:
+                self.y -= self.enemy_vel
+            if self.y > self.player.y:
+                self.y += self.enemy_vel
+        
     def update(self):
         self.__draw()
-        self.eatEnemy(self.player)
-        self._enemyMovement(self.player)
-
-        if len(self.enemies_list) <= 0:
-            self.enemies_list = self.__spawnEnemy()
-        if len(self.food_list) <= 0:
-            self.food_list = self.__spawnFood()
+        self._enemyMovement()
