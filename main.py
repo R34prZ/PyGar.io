@@ -1,9 +1,9 @@
 import pygame, sys
 from pygame.locals import *
 
-import player, enemy, world
+import world
 
-version = "1.3"
+version = "2.0"
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -11,20 +11,12 @@ clock = pygame.time.Clock()
 WIN_SIZE = width, height = 1080, 720
 screen = pygame.display.set_mode(WIN_SIZE, 0, 32)
 
-player = player.Player(width//2 - 15, height//2 - 15, 20)
-player.drawPlayer(screen, (50, 100, 250))
-
-world = world.World(screen, 5, player)
-
-enemy = enemy.Enemy(5, screen, world)
-enemy.eatEnemy(player)
+world = world.World(screen, 5)
 
 while True:
 
     screen.fill((255, 255, 255))
     
-    player.update()
-    enemy.update()
     world.update()
 
     for event in pygame.event.get():
